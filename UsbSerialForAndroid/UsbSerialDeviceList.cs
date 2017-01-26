@@ -73,7 +73,7 @@ namespace Aid.UsbSerial
         //
 
 
-        public static UsbSerialDeviceList Default { get; }
+        public static UsbSerialDeviceList Default { get; private set; }
 
 
         static UsbSerialDeviceList()
@@ -113,7 +113,7 @@ namespace Aid.UsbSerial
 		//
 
         
-		public Dictionary<UsbSerialDeviceID, UsbSerialDeviceInfo> AvailableDeviceInfo { get; }
+		public Dictionary<UsbSerialDeviceID, UsbSerialDeviceInfo> AvailableDeviceInfo { get; private set; }
 
 
 		public UsbSerialDeviceList()

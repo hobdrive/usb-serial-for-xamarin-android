@@ -42,12 +42,12 @@ namespace Aid.UsbSerial
      */
     public class UsbSerialDeviceManager
     {
-        private Context Context { get; }
+        private Context Context { get; set; }
         private bool IsWorking { get; set; }
-        private UsbManager UsbManager { get; }
-        private UsbSerialDeviceBroadcastReceiver Receiver { get; }
-        private string ActionUsbPermission { get; }
-        public bool AllowAnonymousCdcAcmDevices { get; }
+        private UsbManager UsbManager { get; set; }
+        private UsbSerialDeviceBroadcastReceiver Receiver { get; set; }
+        private string ActionUsbPermission { get; set; }
+        public bool AllowAnonymousCdcAcmDevices { get; private set; }
 #if UseSmartThreadPool
         public SmartThreadPool ThreadPool { get; private set; }
 #endif
@@ -55,9 +55,9 @@ namespace Aid.UsbSerial
         public event EventHandler<UsbSerialDeviceEventArgs> DeviceAttached;
         public event EventHandler<UsbSerialDeviceEventArgs> DeviceDetached;
 
-        public Dictionary<UsbSerialDeviceID, UsbSerialDeviceInfo> AvailableDeviceInfo { get; }
+        public Dictionary<UsbSerialDeviceID, UsbSerialDeviceInfo> AvailableDeviceInfo { get; private set;}
         private readonly object _attachedDevicesSyncRoot = new object();
-        public List<UsbSerialDevice> AttachedDevices { get; }
+        public List<UsbSerialDevice> AttachedDevices { get; private set;}
 
 #if UseSmartThreadPool
         public UsbSerialDeviceManager(Context context, string actionUsbPermission, bool allowAnonymousCdcAmcDevices)
@@ -273,11 +273,11 @@ namespace Aid.UsbSerial
 
         private class UsbSerialDeviceBroadcastReceiver : BroadcastReceiver
         {
-            private UsbManager UsbManager { get; }
+            private UsbManager UsbManager { get; set;}
 
-            private UsbSerialDeviceManager DeviceManager { get; }
+            private UsbSerialDeviceManager DeviceManager { get; set; }
 
-            private string ActionUsbPermission { get; }
+            private string ActionUsbPermission { get; set; }
 
             public UsbSerialDeviceBroadcastReceiver(UsbSerialDeviceManager manager, UsbManager usbManager, string actionUsbPermission)
             {
