@@ -127,7 +127,8 @@ namespace Aid.UsbSerial
                 lock (_attachedDevicesSyncRoot)
                 {
                     AttachedDevices.Add(serialDevice);
-                    DeviceAttached?.Invoke(this, new UsbSerialDeviceEventArgs(serialDevice));
+                    if (DeviceAttached != null)
+                    DeviceAttached.Invoke(this, new UsbSerialDeviceEventArgs(serialDevice));
                 }
             }
         }
@@ -170,7 +171,8 @@ namespace Aid.UsbSerial
                 lock (_attachedDevicesSyncRoot)
                 {
                     serialDevice.CloseAllPorts();
-                    DeviceDetached?.Invoke(this, new UsbSerialDeviceEventArgs(serialDevice));
+                    if (DeviceDetached != null)
+                        DeviceDetached.Invoke(this, new UsbSerialDeviceEventArgs(serialDevice));
                     AttachedDevices.Remove(serialDevice);
                 }
             }
