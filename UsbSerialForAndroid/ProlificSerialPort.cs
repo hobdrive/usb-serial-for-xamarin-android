@@ -360,7 +360,6 @@ namespace Aid.UsbSerial
                 {
                     CloseConnection();
                     IsOpened = false;
-                    Dtr = false;
                 }
             }
         }
