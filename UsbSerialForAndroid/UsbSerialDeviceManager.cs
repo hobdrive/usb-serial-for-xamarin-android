@@ -139,16 +139,9 @@ namespace Aid.UsbSerial
             var attachedDevices = AttachedDevices.ToArray();
             foreach (var device in attachedDevices)
             {
-                bool serialEquals;
-                try
-                {
-                    // TODO Fix this workaround of https://github.com/ysykhmd/usb-serial-for-xamarin-android/issues/1
+                bool serialEquals = true;
+                if(Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Lollipop)
                     serialEquals = device.UsbDevice.SerialNumber == usbDevice.SerialNumber;
-                }
-                catch (Exception)
-                {
-                    serialEquals = true;
-                }
 
                 if (device.UsbDevice.VendorId == usbDevice.VendorId
                     && device.UsbDevice.ProductId == usbDevice.ProductId
