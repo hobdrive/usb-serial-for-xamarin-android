@@ -195,7 +195,13 @@ namespace Aid.UsbSerial
                 var exists = false;
                 foreach (var usbDevice in UsbManager.DeviceList.Values)
                 {
-                    if ((usbDevice.VendorId == attachedDevice.ID.VendorID) && (usbDevice.ProductId == attachedDevice.ID.ProductID) && (usbDevice.SerialNumber == attachedDevice.UsbDevice.SerialNumber))
+                    bool serialEquals = true;
+                    if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Lollipop)
+                        serialEquals = usbDevice.SerialNumber == attachedDevice.UsbDevice.SerialNumber;
+
+                    if ((usbDevice.VendorId == attachedDevice.ID.VendorID) && 
+                        (usbDevice.ProductId == attachedDevice.ID.ProductID) &&
+                        serialEquals)
                     {
                         exists = true;
                         break;
@@ -214,7 +220,13 @@ namespace Aid.UsbSerial
                 attachedDevices = AttachedDevices.ToArray();
                 foreach (var attachedDevice in attachedDevices)
                 {
-                    if ((usbDevice.VendorId == attachedDevice.ID.VendorID) && (usbDevice.ProductId == attachedDevice.ID.ProductID) && (usbDevice.SerialNumber == attachedDevice.UsbDevice.SerialNumber))
+                    bool serialEquals = true;
+                    if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Lollipop)
+                        serialEquals = usbDevice.SerialNumber == attachedDevice.UsbDevice.SerialNumber;
+
+                    if ((usbDevice.VendorId == attachedDevice.ID.VendorID) && 
+                        (usbDevice.ProductId == attachedDevice.ID.ProductID) &&
+                        serialEquals)
                     {
                         exists = true;
                         break;
