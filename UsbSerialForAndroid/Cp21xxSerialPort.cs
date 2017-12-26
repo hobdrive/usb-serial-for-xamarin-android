@@ -87,7 +87,10 @@ namespace Aid.UsbSerial
 
         int setConfigSingle(int request, int value)
         {
-            return Connection.ControlTransfer((UsbAddressing)REQTYPE_HOST_TO_DEVICE, request, value, 0, null, 0, USB_WRITE_TIMEOUT_MILLIS);
+            if (Connection != null)
+                return Connection.ControlTransfer((UsbAddressing)REQTYPE_HOST_TO_DEVICE, request, value, 0, null, 0, USB_WRITE_TIMEOUT_MILLIS);
+            else
+                return -1;
         }
 
         public override void Open()
