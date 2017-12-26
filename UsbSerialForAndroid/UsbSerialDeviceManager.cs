@@ -232,7 +232,7 @@ namespace Aid.UsbSerial
                         break;
                     }
                 }
-                if (exists)
+                if (exists || GetDevice(UsbManager, usbDevice, AllowAnonymousCdcAcmDevices) == null)
                 {
                     break;
                 }
