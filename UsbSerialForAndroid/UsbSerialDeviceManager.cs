@@ -48,6 +48,7 @@ namespace Aid.UsbSerial
         private UsbSerialDeviceBroadcastReceiver Receiver { get; set; }
         private string ActionUsbPermission { get; set; }
         public bool AllowAnonymousCdcAcmDevices { get; private set; }
+        public bool CanShowDialogUsbPermission { get; set; }
 #if UseSmartThreadPool
         public SmartThreadPool ThreadPool { get; private set; }
 #endif
@@ -236,14 +237,18 @@ namespace Aid.UsbSerial
                 {
                     break;
                 }
-                if (!UsbManager.HasPermission(usbDevice))
+                if (CanShowDialogUsbPermission)
                 {
-                    var permissionIntent = PendingIntent.GetBroadcast(Context.ApplicationContext, 0, new Intent(ActionUsbPermission), 0);
-                    UsbManager.RequestPermission(usbDevice, permissionIntent);
-                }
-                else
-                {
-                    AddDevice(UsbManager, usbDevice);
+                    if (!UsbManager.HasPermission(usbDevice))
+                    {
+                        var permissionIntent = PendingIntent.GetBroadcast(Context.ApplicationContext, 0, new Intent(ActionUsbPermission), 0);
+                        UsbManager.RequestPermission(usbDevice, permissionIntent);
+                    }
+                    else
+                    {
+                        AddDevice(UsbManager, usbDevice);
+                    }
+                    CanShowDialogUsbPermission = false;
                 }
             }
         }
