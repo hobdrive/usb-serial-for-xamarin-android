@@ -253,6 +253,12 @@ namespace Aid.UsbSerial
             }
         }
 
+        public void AllowPermissionsAndUpdate()
+        {
+            CanShowDialogUsbPermission = true;
+            Update();
+        }
+
         private UsbSerialDevice GetDevice(UsbManager usbManager, UsbDevice usbDevice, bool allowAnonymousCdcAcmDevices)
         {
             var id = new UsbSerialDeviceID(usbDevice.VendorId, usbDevice.ProductId);
