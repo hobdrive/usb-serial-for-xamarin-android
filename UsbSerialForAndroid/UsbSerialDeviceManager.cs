@@ -1,4 +1,4 @@
-/* Copyright 2011-2013 Google Inc.
+﻿/* Copyright 2011-2013 Google Inc.
  * Copyright 2013 mike wakerly <opensource@hoho.com>
  * Copyright 2015 Yasuyuki Hamada <yasuyuki_hamada@agri-info-design.com>
  *
@@ -105,6 +105,8 @@ namespace Aid.UsbSerial
 
         public void Start()
         {
+            Android.Util.Log.Info("USB", "Class: USBSerialDeviceManager | Method: Start()");
+
             if (IsWorking)
             {
                 return;
@@ -116,11 +118,16 @@ namespace Aid.UsbSerial
             filter.AddAction(UsbManager.ActionUsbDeviceDetached);
             filter.AddAction(ActionUsbPermission);
             Context.RegisterReceiver(Receiver, filter);
+
+            Android.Util.Log.Info("USB", "Class: USBSerialDeviceManager | Method: Start() | Commect: Выполняем Update()");
+
             Update();
         }
 
         internal void AddDevice(UsbManager usbManager, UsbDevice usbDevice)
         {
+            Android.Util.Log.Info("USB", "Class: USBSerialDeviceManager | Method: AddDevice()");
+
             var serialDevice = GetDevice(usbManager, usbDevice, AllowAnonymousCdcAcmDevices);
             if (serialDevice != null)
             {
@@ -159,10 +166,14 @@ namespace Aid.UsbSerial
 
         internal void RemoveDevice(UsbSerialDevice serialDevice)
         {
+            Android.Util.Log.Info("USB", "Class: USBSerialDeviceManager | Method: RemoveDevice()");
+
             if (serialDevice != null)
             {
                 lock (_attachedDevicesSyncRoot)
                 {
+                    Android.Util.Log.Info("USB", "Class: USBSerialDeviceManager | Method: RemoveDevice() | Comment: Закрываем все порты");
+
                     serialDevice.CloseAllPorts();
                     if (DeviceDetached != null)
                         DeviceDetached.Invoke(this, new UsbSerialDeviceEventArgs(serialDevice));
@@ -173,6 +184,8 @@ namespace Aid.UsbSerial
 
         public void Stop()
         {
+            Android.Util.Log.Info("USB", "Class: USBSerialDeviceManager | Method: Stop()");
+
             if (!IsWorking)
             {
                 return;
@@ -188,13 +201,19 @@ namespace Aid.UsbSerial
 
         public void Update()
         {
+            Android.Util.Log.Info("USB", "Class: USBSerialDeviceManager | Method: Update()");
+
             // Remove detached devices from AttachedDevices
             var attachedDevices = AttachedDevices.ToArray();
             foreach (var attachedDevice in attachedDevices)
             {
+                Android.Util.Log.Info("USB", "Class: USBSerialDeviceManager | Method: Update() | Comment: в AttachedDevices есть девайсы. Проходим циклом по всем девайсам");
+
                 var exists = false;
                 foreach (var usbDevice in UsbManager.DeviceList.Values)
                 {
+                    Android.Util.Log.Info("USB", "Class: USBSerialDeviceManager | Method: Update() | Comment: в UsbManager.DeviceList тоже есть девайсы. Проходим циклом по всем девайсам");
+
                     bool serialEquals = true;
                     if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Lollipop)
                         serialEquals = usbDevice.SerialNumber == attachedDevice.UsbDevice.SerialNumber;
@@ -203,23 +222,32 @@ namespace Aid.UsbSerial
                         (usbDevice.ProductId == attachedDevice.ID.ProductID) &&
                         serialEquals)
                     {
+                        Android.Util.Log.Info("USB", "Class: USBSerialDeviceManager | Method: Update() | Comment: Обнаружено совпадение.Выходим из циклов");
                         exists = true;
                         break;
                     }
                 }
                 if (!exists)
                 {
+                    Android.Util.Log.Info("USB", "Class: USBSerialDeviceManager | Method: Update() | Comment: Совпадений не обнаружено. Удаляем девайс");
+
                     RemoveDevice(attachedDevice);
                 }
             }
 
+            Android.Util.Log.Info("USB", "Class: USBSerialDeviceManager | Method: Update() | Comment: Переходим ко второму циклу");
+
             // Add attached devices If not exists in AttachedDevices
             foreach (var usbDevice in UsbManager.DeviceList.Values)
             {
+                Android.Util.Log.Info("USB", "Class: USBSerialDeviceManager | Method: Update() | Comment: в UsbManager.DeviceList есть девайсы. Проходим циклом по всем девайсам");
+
                 var exists = false;
                 attachedDevices = AttachedDevices.ToArray();
                 foreach (var attachedDevice in attachedDevices)
                 {
+                    Android.Util.Log.Info("USB", "Class: USBSerialDeviceManager | Method: Update() | Comment: в AttachedDevices тоже есть девайсы. Проходим циклом по всем девайсам");
+
                     bool serialEquals = true;
                     if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Lollipop)
                         serialEquals = usbDevice.SerialNumber == attachedDevice.UsbDevice.SerialNumber;
@@ -228,21 +256,31 @@ namespace Aid.UsbSerial
                         (usbDevice.ProductId == attachedDevice.ID.ProductID) &&
                         serialEquals)
                     {
+                        Android.Util.Log.Info("USB", "Class: USBSerialDeviceManager | Method: Update() | Comment: Обнаружено совпадение");
+
                         exists = true;
                         break;
                     }
                 }
                 if (exists)
                 {
+                    Android.Util.Log.Info("USB", "Class: USBSerialDeviceManager | Method: Update() | Comment: Выходим из цикла, не выводя окно на запрос прав доступа");
                     break;
                 }
+
+                Android.Util.Log.Info("USB", "Class: USBSerialDeviceManager | Method: Update() | Comment: Обнаружений не найдено. Значит будем проверять права подключенного устройства... ");
+
                 if (!UsbManager.HasPermission(usbDevice))
                 {
+                    Android.Util.Log.Info("USB", "Class: USBSerialDeviceManager | Method: Update() | Comment: У подключенного устройства, права не обнаружены. Поэтому выводим окно с запросом ");
+
                     var permissionIntent = PendingIntent.GetBroadcast(Context.ApplicationContext, 0, new Intent(ActionUsbPermission), 0);
                     UsbManager.RequestPermission(usbDevice, permissionIntent);
                 }
                 else
                 {
+                    Android.Util.Log.Info("USB", "Class: USBSerialDeviceManager | Method: Update() | Comment: У подключенного устройства уже есть права. Поэтому автоматически его добавляем в AttachedDevices ");
+
                     AddDevice(UsbManager, usbDevice);
                 }
             }
@@ -250,6 +288,8 @@ namespace Aid.UsbSerial
 
         private UsbSerialDevice GetDevice(UsbManager usbManager, UsbDevice usbDevice, bool allowAnonymousCdcAcmDevices)
         {
+            Android.Util.Log.Info("USB", "Class: USBSerialDeviceManager | Method: GetDevice()");
+
             var id = new UsbSerialDeviceID(usbDevice.VendorId, usbDevice.ProductId);
             var info = FindDeviceInfo(id, usbDevice.DeviceClass, allowAnonymousCdcAcmDevices);
             if (info != null)
@@ -266,6 +306,8 @@ namespace Aid.UsbSerial
 
         private UsbSerialDeviceInfo FindDeviceInfo(UsbSerialDeviceID id, UsbClass usbClass, bool allowAnonymousCdcAcmDevices)
         {
+            Android.Util.Log.Info("USB", "Class: USBSerialDeviceManager | Method: FindDeviceInfo()");
+
             if (AvailableDeviceInfo.ContainsKey(id))
             {
                 return AvailableDeviceInfo[id];
@@ -295,37 +337,63 @@ namespace Aid.UsbSerial
 
             public override void OnReceive(Context context, Intent intent)
             {
+                Android.Util.Log.Info("USB", "Class: UsbSerialDeviceBroadcastReceiver | Method: OnRecieve() | Intent.Action : " + intent.Action);
+
                 var device = intent.GetParcelableExtra(UsbManager.ExtraDevice) as UsbDevice;
                 if (device == null)
+                {
+                    Android.Util.Log.Info("USB", "Class: UsbSerialDeviceBroadcastReceiver | Method: OnRecieve() | Comment: Девайс не обнаружен. Выходим из метода");
+
                     return;
+                }
 
                 var id = new UsbSerialDeviceID(device.VendorId, device.ProductId);
                 var info = DeviceManager.FindDeviceInfo(id, device.DeviceClass, DeviceManager.AllowAnonymousCdcAcmDevices);
                 if (info == null)
+                {
+                    Android.Util.Log.Info("USB", "Class: UsbSerialDeviceBroadcastReceiver | Method: OnRecieve() | Comment: Девайс обнаружен, но информации о нем нет. Выходим из метода");
                     return;
+                }
+
 
                 var action = intent.Action;
                 if (action == UsbManager.ActionUsbDeviceAttached)
                 {
+                    Android.Util.Log.Info("USB", "Class: UsbSerialDeviceBroadcastReceiver | Method: OnRecieve() | Comment: Девайс вызвал событие Attached. Проверяем есть ли у подключенного устр-ва права...");
+
                     if (!UsbManager.HasPermission(device))
                     {
+                        Android.Util.Log.Info("USB", "Class: UsbSerialDeviceBroadcastReceiver | Method: OnRecieve() | Comment: Прав нет. Вызываем окно с запросом на предоставление прав...");
+
                         var permissionIntent = PendingIntent.GetBroadcast(context, 0, new Intent(ActionUsbPermission), 0);
                         UsbManager.RequestPermission(device, permissionIntent);
                     }
                     else
                     {
+                        Android.Util.Log.Info("USB", "Class: UsbSerialDeviceBroadcastReceiver | Method: OnRecieve() | Comment: Права у только что подключенного устройства есть. Добавляем его в DeviceManager (AttachedDevices) ");
+
                         DeviceManager.AddDevice(UsbManager, device);
                     }
                 }
                 else if (action == UsbManager.ActionUsbDeviceDetached)
                 {
+                    Android.Util.Log.Info("USB", "Class: UsbSerialDeviceBroadcastReceiver | Method: OnRecieve() | Comment: Устр-во было изъято. Удаляем его из DeviceManager (AttachedDevices) ");
+
                     DeviceManager.RemoveDevice(device);
                 }
                 else if (action == ActionUsbPermission)
                 {
+                    Android.Util.Log.Info("USB", "Class: UsbSerialDeviceBroadcastReceiver | Method: OnRecieve() | Comment: Пользователь выбрал в окне дать права устройству или нет. Узнаем что выбрал");
+
                     if (UsbManager.HasPermission(device))
                     {
+                        Android.Util.Log.Info("USB", "Class: UsbSerialDeviceBroadcastReceiver | Method: OnRecieve() | Comment: Пользователь нажал 'ОК', тем самым разрешил устр-ву доступ. Теперь добавляем его в DeviceManager (AttachedDevices)");
+
                         DeviceManager.AddDevice(UsbManager, device);
+                    }
+                    else
+                    {
+                        Android.Util.Log.Info("USB", "Class: UsbSerialDeviceBroadcastReceiver | Method: OnRecieve() | Comment: Пользователь нажал 'Отмена', тем самым не дал права устройству. Никаких действий пока не предпринимаем");
                     }
                 }
             }
