@@ -37,7 +37,7 @@ namespace Aid.UsbSerial
         private const int DEFAULT_BAUD_RATE = 9600;
 
         private const int USB_WRITE_TIMEOUT_MILLIS = 5000;
-        public new int DEFAULT_READ_TIMEOUT_MILLISEC = 1;
+        public new int DEFAULT_READ_TIMEOUT_MILLISEC = 200;
 
         /*
          * Configuration Request Types
