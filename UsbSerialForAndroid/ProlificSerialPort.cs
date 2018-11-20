@@ -47,7 +47,7 @@ namespace Aid.UsbSerial
 
         private const int USB_READ_TIMEOUT_MILLIS = 1000;
         private const int USB_WRITE_TIMEOUT_MILLIS = 5000;
-		public new int DEFAULT_READ_TIMEOUT_MILLISEC = 200;
+        public new int DEFAULT_READ_TIMEOUT_MILLISEC = 200;
 
         private const int USB_RECIP_INTERFACE = 0x01;
 
