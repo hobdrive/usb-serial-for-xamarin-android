@@ -222,7 +222,7 @@ namespace Aid.UsbSerial
          */
         public string Serial
         {
-            get { return Connection.Serial; }
+            get { return Connection != null ? Connection.Serial : null; }
         }
 
 
