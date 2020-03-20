@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 
+using Android.OS;
 using Android.App;
 using Android.Content;
 using Android.Hardware.Usb;
@@ -140,7 +141,7 @@ namespace Aid.UsbSerial
             foreach (var device in attachedDevices)
             {
                 bool serialEquals = true;
-                if(Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Lollipop)
+                if(Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop)
                     serialEquals = device.UsbDevice.SerialNumber == usbDevice.SerialNumber;
 
                 if (device.UsbDevice.VendorId == usbDevice.VendorId
@@ -196,7 +197,7 @@ namespace Aid.UsbSerial
                 foreach (var usbDevice in UsbManager.DeviceList.Values)
                 {
                     bool serialEquals = true;
-                    if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Lollipop)
+                    if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop)
                         serialEquals = usbDevice.SerialNumber == attachedDevice.UsbDevice.SerialNumber;
 
                     if ((usbDevice.VendorId == attachedDevice.ID.VendorID) && 
@@ -221,7 +222,7 @@ namespace Aid.UsbSerial
                 foreach (var attachedDevice in attachedDevices)
                 {
                     bool serialEquals = true;
-                    if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Lollipop)
+                    if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop)
                         serialEquals = usbDevice.SerialNumber == attachedDevice.UsbDevice.SerialNumber;
 
                     if ((usbDevice.VendorId == attachedDevice.ID.VendorID) && 
