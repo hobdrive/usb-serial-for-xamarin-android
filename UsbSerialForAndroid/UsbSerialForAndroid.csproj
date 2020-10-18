@@ -10,9 +10,9 @@
     <RootNamespace>Aid.Android.UsbSerial</RootNamespace>
     <AssemblyName>UsbSerialForAndroid</AssemblyName>
     <FileAlignment>512</FileAlignment>
+    <AndroidUseAapt2>False</AndroidUseAapt2>
     <AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
-    <AndroidUseLatestPlatformSdk>false</AndroidUseLatestPlatformSdk>
     <TargetFrameworkVersion>v8.0</TargetFrameworkVersion>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
